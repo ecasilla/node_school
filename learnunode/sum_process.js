@@ -2,10 +2,8 @@
 
 function sum(args) {
   for (var i = 0, l =args.length; i < l; i ++) {
-    var v = +args[i];
-    console.log(v);
-    var x = x + v;
-    console.log(x);
+    var v = +args[i],
+        x = x + v;
   }
   return x;
 }
