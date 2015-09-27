@@ -1,30 +1,52 @@
 var async = require('async'),
     http  = require('http'),
-    args  = process.argv.slice(2);
+    args  = process.argv.slice(2),
+    host  = args[0],
+    port  = args[1],
+    url = 'http://' +  hostname + ':' + port; 
 
 var logger = function() {
   console.log.apply(this,arguments);
 }
 
-function req_url(item,callback) {
- http.get(item,function(res) {
+logger(url)
+
+function createUser(id, callback) {
+  var user = {user_id: id}
+  callback(null, JSON.Stringify(user));
+}
+function req_url(url,callback) {
+ var data;
+ http.get(url,function(res) {
   res.on('data',function(chunk) {
+    data += chunck
   })
   res.on('end',function() {
-   callback(null);
+   callback(null,data);
   })
  }).on('error',function(error) {
-  callback(error); 
+  callback(error,null); 
  });
 }
 
-async.each(args,function(item,callback) {
-  req_url(item,callback) 
-},
-function(err,result) {
- if(err){
-  return logger(err);
- }else{
-  logger(result);
- }
-});
+function series(obj,cb) {
+  async.series(obj,cb)
+}
+
+var config = {
+ times: async.times(5,function(n,next) {
+  createUser(n,function(err,user) {
+    next(err,user)
+  }) 
+ })
+ post(url,user,function(err) {
+   
+ })
+}
+
+series(config,function(err,results) {
+  if (err) {
+   logger(err);
+  }
+ logger(results);
+})
